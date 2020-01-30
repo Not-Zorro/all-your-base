@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("port", process.env.PORT || 3000);
-app.locals.title = "Publications";
+app.locals.title = "Sweater Weather";
 
 var favoriteRouter = require('./routes/api/v1/favorites');
 
