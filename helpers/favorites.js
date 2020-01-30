@@ -21,7 +21,7 @@ function remove(location, id) {
   console.log(id)
   return database('favorites').del().where({user_id: id, location: location})
   .then(favorite => {
-    return { status: 200 }
+    return { status: 204 }
   })
   .catch(error => {
     return {
