@@ -17,8 +17,6 @@ function create(location, id) {
 }
 
 function remove(location, id) {
-  console.log(location)
-  console.log(id)
   return database('favorites').del().where({user_id: id, location: location})
   .then(favorite => {
     return { status: 204 }
