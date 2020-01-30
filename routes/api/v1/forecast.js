@@ -11,13 +11,15 @@ router.get('/', (req, res) => {
   database('users').where("api_key", req.body.api_key).first()
     .then(user => {
       if (user) {
-        darksky(req.query.location).then(data => {
-          res.status(200).json((new makeForecast(req.query.location, data)).fullCast());
-        })
-      } else {
-        res.status(401).json({error: 'Unauthorized'});
+        if(req.query.location) {
+          darksky(req.query.location).then(data => {
+            res.status(200).json((new makeForecast(req.query.location, data)).fullCast());
+          })
+        } else {
+          res.status(401).json({error: 'No location provided'});
+        }
       }
-  }).catch(error => console.log(error));
+  }).catch(error => res.status(401).json({error: 'Unauthorized'}));
 });
 
 module.exports = router;
