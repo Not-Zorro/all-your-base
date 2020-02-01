@@ -28,7 +28,18 @@ function remove(location, id) {
   });
 }
 
+function retrieve(id) {
+  return database('favorites').where({user_id: id})
+  .then(favorites => favorites)
+  .catch(error => {
+    return {
+      message: { error: error },
+      status: 500 }
+  });
+}
+
 module.exports = {
   create: create,
-  remove: remove
+  remove: remove,
+  retrieve: retrieve
 }
