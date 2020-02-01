@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
           Promise.all(allPromises).then(data => {
             return res.status(200).send(
               data.map((json, index) => {
-              return {location: favsArray[index].location, currently: current(json)}
+                return {location: favsArray[index].location, currently: current(json)}
               })
             )
           })
