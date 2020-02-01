@@ -6,6 +6,30 @@ const config = require("../../../knexfile")[enviroment]
 const database = require("knex")(config)
 const makeFavorite = require('../../../helpers/favorites').create
 const delFavorite = require('../../../helpers/favorites').remove
+const retrieveFavorites = require('../../../helpers/favorites').retrieve
+const current = require('../../../lib/pojo/current')
+const darksky = require('../../../lib/services/darksky_service')
+
+router.get('/', (req, res) => {
+  database('users').where("api_key", req.body.api_key).first()
+    .then(user => {
+      if (user) {
+        retrieveFavorites(user.id).then(favsArray => {
+          let allPromises = favsArray.map(locationRow => {
+            return darksky(locationRow.location)
+          })
+
+          Promise.all(allPromises).then(data => {
+            return res.status(200).send(
+              data.map((json, index) => {
+              return {location: favsArray[index].location, currently: current(json)}
+              })
+            )
+          })
+        })
+      }
+    });
+})
 
 router.post('/', (req, res) => {
   let location = req.body.location
