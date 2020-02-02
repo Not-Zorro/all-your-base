@@ -15,20 +15,22 @@ router.get('/', (req, res) => {
     .then(user => {
       if (user) {
         retrieveFavorites(user.id).then(favsArray => {
-          let allPromises = favsArray.map(locationRow => {
-            return darksky(locationRow.location)
-          })
+          if (favsArray.length) {
+            let allPromises = favsArray.map(locationRow => {
+              return darksky(locationRow.location)
+            })
 
-          Promise.all(allPromises).then(data => {
-            return res.status(200).send(
-              data.map((json, index) => {
-                return {location: favsArray[index].location, currently: current(json)}
-              })
-            )
-          })
+            Promise.all(allPromises).then(data => {
+              return res.status(200).send(
+                data.map((json, index) => {
+                  return {location: favsArray[index].location, currently: current(json)}
+                })
+              )
+            })
+          } else { res.status(404).json({error: 'No favorited locations found'}) }
         })
-      }
-    });
+      } else { res.status(401).json({error: 'Unauthorized'}) }
+    }).catch(error => res.status(401).json({error: 'Unauthorized'}))
 })
 
 router.post('/', (req, res) => {
